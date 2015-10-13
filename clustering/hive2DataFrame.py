@@ -12,24 +12,24 @@ import pandas as pd
 print ('------------PROCESS START---------------')
 print (time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()))
 
-host = '172.22.54.116'
+host = 'x.x.x.x'
 port = 10000
 auth = 'PLAIN'
-user = 'kettle'
-pswd = 'K3ysimFnvQEUUXyEXPujGugryrCgEmF4GZdWyFmQcQfxZUBjnb'
+user = 'xxx'
+pswd = 'xxx'
 daba = 'default'
 
 #Fetch some user Ids 
-query = '''SELECT mixpanel_map['P7S1 user ID']
-        FROM kettle_source.mixpanel_parsed 
-        WHERE group LIKE '7TVMobileLive' 
-        AND mixpanel_map['P7S1 user ID'] IS NOT NULL 
+query = '''SELECT mixpanel_map['  union user ID']
+        FROM schema.table 
+        WHERE group LIKE 'xxx' 
+        AND mixpanel_map['  union user ID'] IS NOT NULL 
         AND mixpanel_map['App version on install'] IS NOT NULL
         AND mixpanel_map['App version on install'] != "<1.5"
         AND mixpanel_map['Install date'] >= "2015-08-01"
         AND mixpanel_map['Install date'] < "2015-09-01"
         AND mixpanel_map['time'] IS NOT NULL
-        GROUP BY mixpanel_map['P7S1 user ID']
+        GROUP BY mixpanel_map['  union user ID']
         --DISTRIBUTE BY RAND()
         --SORT BY RAND()
         LIMIT 10000
@@ -43,7 +43,7 @@ with pyhs2.connect(host=host,port=port,authMechanism=auth,user=user,password=psw
 print ('------------JOIN STARTS---------------')
 print (time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()))
 #Get events created by above users
-query = '''SELECT * FROM kettle_source.mixpanel_parsed WHERE mixpanel_map['P7S1 user ID'] IN('{ids}')'''.format(ids="','".join(user_IDs))
+query = '''SELECT * FROM schema.table WHERE mixpanel_map['  union user ID'] IN('{ids}')'''.format(ids="','".join(user_IDs))
 null = np.nan
 
 print ('------------JOIN STARTS---------------')
@@ -56,7 +56,7 @@ with pyhs2.connect(host=host,port=port,authMechanism=auth,user=user,password=psw
         #for i in range(100):
         #    print('Events of {} users queried'.format(i*100))
         #    uid = user_IDs[i*100:(i+1)*100]
-        query = '''SELECT * FROM kettle_source.mixpanel_parsed WHERE mixpanel_map['P7S1 user ID'] IN('{ids}')'''.format(ids="','".join(user_IDs))
+        query = '''SELECT * FROM schema.table WHERE mixpanel_map['  union user ID'] IN('{ids}')'''.format(ids="','".join(user_IDs))
         cur.execute(query)
         for index, row in enumerate(cur.fetchall()):
         	if np.mod(index,1000)==0:

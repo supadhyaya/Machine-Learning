@@ -1,0 +1,358 @@
+Stack Exchange Inbox1  Reputation and Badges  1  help  
+
+
+Stack Overflow
+Questions
+ 
+Jobs
+ 
+Tags
+ 
+Users
+ 
+Badges
+ 
+Ask Question
+How to sort a Java Hashtable?
+
+Zalando SEBerlin, Germany
+Work at Zalando SE
+Peter Krajcar
+Peter Krajcar
+javaandroidc#
+Robert Muil
+Robert Muil
+Senior Data Scientist
+scipysqlpython
+up vote
+7
+down vote
+favorite
+I inserted some data into a Java Hashtable. If I read the data from the Hashtable it doesn't come back in the same order that I inserted it in. How do I get the ordered data from the Hashtable?
+
+I use the following code to get the values from the hashtable:
+
+// Get a set of the entries
+Set set = hsUpdateValues.entrySet();
+// Get an iterator
+Iterator i = set.iterator();
+// Display elements
+while (i.hasNext()) {
+    Map.Entry me = (Map.Entry) i.next();            
+    System.out.print(
+        "Key : " + me.getKey()
+        + ", Value: " + me.getValue()
+    );
+}
+java sorting maps hashtable
+shareedit
+edited Nov 6 '11 at 22:42
+
+Ryan Shripat
+3,19452961
+asked Dec 2 '10 at 9:04
+
+Tester
+90761515
+  	 	
+Don't use Vector, Enumeration or Hashtable. They are ancient and should be avoided. Info: stackoverflow.com/questions/453684/… stackoverflow.com/questions/2601602/… stackoverflow.com/questions/2873254/… – Sean Patrick Floyd Dec 2 '10 at 10:35 
+add a comment
+7 Answers
+active oldest votes
+up vote
+20
+down vote
+accepted
+If you want an order-preserving map, you should use LinkedHashMap:
+
+Hash table and linked list implementation of the Map interface, with predictable iteration order. This implementation differs from HashMap in that it maintains a doubly-linked list running through all of its entries. This linked list defines the iteration ordering, which is normally the order in which keys were inserted into the map (insertion-order). Note that insertion order is not affected if a key is re-inserted into the map. (A key k is reinserted into a map m if m.put(k, v) is invoked when m.containsKey(k) would return true immediately prior to the invocation.)
+
+This implementation spares its clients from the unspecified, generally chaotic ordering provided by HashMap (and Hashtable), without incurring the increased cost associated with TreeMap.
+Note that this is usually compared with HashMap rather than Hashtable - I don't know of an order-preserving equivalent to Hashtable; the latter isn't usually used these days anyway (just as ArrayList is usually used in preference to Vector).
+
+I've assumed you want insertion order rather than key-sorted order. If you want the latter, use TreeMap.
+
+shareedit
+answered Dec 2 '10 at 9:07
+
+Jon Skeet
+867k46262097238
+  	 	
+Thanks for your Help. – Tester Dec 2 '10 at 9:18
+1	 	
+@Tester: you'd likely want to "accept" an answer, if it's okay for you :) – GreyCat Dec 2 '10 at 9:20
+add a comment
+Zalando SEBerlin, Germany
+Work at Zalando SE
+Mentoring programPersonal branding support40% Zalando discount
+up vote
+7
+down vote
+A Hashtable has no predictable iteration order, and cannot be sorted. If you only want predictable iteration order you should use a LinkedHashMap. If you want to be able to sort your Map, you should use a TreeMap.
+
+shareedit
+edited Dec 23 '14 at 18:50
+
+msrd0
+2,81941032
+answered Dec 2 '10 at 9:10
+
+Björn
+19.5k84474
+add a comment
+up vote
+5
+down vote
+Although a Hashtable cannot be sorted, he asked how to get sorted data, that can be done sorting the list of keys extracted from the HashTable and retrieving values in that order. Something like:
+
+List<'your_type'> tmp = Collections.list('your_hashtable'.keys());
+Collections.sort(tmp);
+Iterator<'your_type'> it = tmp.iterator();
+
+while(it.hasNext()){
+    'your_type' element =it.next();
+    //here you can get ordered things: 'your_hashtable'.get(element);
+}
+will be fine.
+
+shareedit
+edited Dec 23 '14 at 18:49
+
+msrd0
+2,81941032
+answered Jul 17 '12 at 14:18
+
+Filippo Mazza
+1,9022911
+add a comment
+up vote
+3
+down vote
+Hashtable is a legacy collection which was replaced by Java 1.2 collections in 1998. I suggest you avoid it, along with Vector and Enumeration.
+
+Instead of Hashtable use HashMap where possible. You can add synchronization using Collections.synchronizedMap(map) if you need it.
+
+Instead of Vector, use ArrayList where possible. You can add synchronization using Collections.synchronizedList(map) if you need it.
+
+Instead of Enumeration you can use Iterator or even a for-each loop.
+
+shareedit
+edited Mar 19 '15 at 6:11
+answered Dec 2 '10 at 9:13
+
+Peter Lawrey
+328k35358665
+1	 	
+What would you use instead? – JoshuaD Mar 19 '15 at 2:19
+add a comment
+up vote
+2
+down vote
+Use TreeMap for sorting it:
+
+Map<String, String> yourMap = new HashMap<String, String>();
+    yourMap.put("1", "one");
+    yourMap.put("2", "two");
+    yourMap.put("3", "three");
+
+Map<String, String> sortedMap = new TreeMap<String, String>(yourMap);
+shareedit
+answered Dec 2 '10 at 9:09
+
+Mohamed Saligh
+4,855134775
+2	 	
+That won't give insertion order though. – Jon Skeet Dec 2 '10 at 9:09
+add a comment
+up vote
+0
+down vote
+I have written an elaborate answer about sorting and ordered retrieving of Maps in this previous Question:
+
+Accessing the last entry in a Map
+
+shareedit
+answered Dec 2 '10 at 10:27
+
+Sean Patrick Floyd
+157k28286417
+add a comment
+up vote
+0
+down vote
+If i read the data from the hash table it's not coming in the same order what i inserted.
+Your question does not make sense. A Hashtable does not have an "order", it is unordered (Edit: Some implementations do have an order, but it's not common for a hashtable)..
+
+In what order would you expect the entries to be?
+
+If you want to store elements in a certain order, you need to use a list (e.g. a subclass of java.util.List).
+
+And BTW, your code sample does not even contain a hash table.
+
+shareedit
+answered Dec 2 '10 at 9:07
+
+sleske
+41.7k12105149
+add a comment
+Your Answer
+
+Links Images Styling/Headers Lists Blockquotes Code HTML advanced help »
+
+ 
+
+Not the answer you're looking for?	Browse other questions tagged java sorting maps hashtable or ask your own question.
+
+asked
+
+5 years ago
+
+viewed
+
+37492 times
+
+active
+
+1 year ago
+
+HOT META POSTS
+10 What's the ordering on team members?
+21 Am I being too snippy — or how should one treat questions where OP doesn't…
+16 Is there such a thing as an “exception to the rules” about Too Broad questions?
+11 What to do with broken but highly upvoted link only answers?
+Zalando SE
+Zalando SE
+based in Berlin, Germany
+
+Benefits
+Discounts from external partners
+Strong open source culture
+Great hardware
+view company page
+Get the weekly newsletter! In it, you'll get:
+
+The week's top questions and answers
+Important community announcements
+Questions that need answers
+
+see an example newsletter
+
+Linked
+
+22
+Accessing the last entry in a Map
+11
+Use Hashtable, Vector or HashMap or ArrayList in Java
+29
+Difference between a deprecated and a legacy API?
+6
+What does it mean when we say Hashtable or Vector is synchronized?
+5
+sort hashtable by values
+Related
+
+2112
+Differences between HashMap and Hashtable?
+884
+Sort a Map<Key, Value> by values (Java)
+30
+Iterating over and deleting from Hashtable in Java
+2
+Sorting problem in HashTable
+2
+Sort HashTable according to values(numeric) preferably descending order and maintain the key-value
+15
+Creating Hashtable as final in java
+14593
+Why is processing a sorted array faster than an unsorted array?
+1
+Debugging in key iterator sorting in Hashtable
+0
+Sorting elements in a HashTable, Dictionary or such
+0
+How to add custom java object to HashTable
+Hot Network Questions
+
+Why did Littlefinger give Sansa to the Boltons?
+How do I cut the bottom off a glass wine bottle?
+When someone praises me awkwardly too much, how to reply?
+How to generate stereo image pair from a stationary mono camera?
+Addressing a person in mail, person has a title
+Better to give a poor/unfinished talk at a conference or cancel it?
+How can one match a function in a replacement rule
+Is there a suffix like "phile" or "phobe" for don't care?
+Does Lwaxana Troi ever talk to herself (as the computer voice)?
+Nutter, Nutter, Peanut Butter
+How to remove MOTD segment when no updates/upgrades?
+"Offensive" bumper sticker on car
+What color for error messages for a form with a red background?
+Why does a leader have to be tapered in fly fishing?
+How can I limit the length of the previous/next posts in my Wordpress Theme?
+The Enterprise and the anomaly
+Could any type of technological advancement occur among a species with no prehensile limbs?
+Animated point following a sinusoidal path on sphere
+Math Olympiad Summation Question
+Active Directory Query Application
+All possible combinations of two vectors while keeping the order in R
+What was this 90's movie about 'God'?
+How to install MSDOS from floppy to harddrive?
+What are sample gaps during scan conversion?
+question feed
+about us tour help blog chat data legal privacy policy work here advertising info mobile contact us feedback
+TECHNOLOGY	LIFE / ARTS	CULTURE / RECREATION	SCIENCE	OTHER
+Stack Overflow
+Server Fault
+Super User
+Web Applications
+Ask Ubuntu
+Webmasters
+Game Development
+TeX - LaTeX
+Programmers
+Unix & Linux
+Ask Different (Apple)
+WordPress Development
+Geographic Information Systems
+Electrical Engineering
+Android Enthusiasts
+Information Security
+Database Administrators
+Drupal Answers
+SharePoint
+User Experience
+Mathematica
+Salesforce
+ExpressionEngine® Answers
+more (13)
+Photography
+Science Fiction & Fantasy
+Graphic Design
+Movies & TV
+Seasoned Advice (cooking)
+Home Improvement
+Personal Finance & Money
+Academia
+more (9)
+English Language & Usage
+Skeptics
+Mi Yodeya (Judaism)
+Travel
+Christianity
+Arqade (gaming)
+Bicycles
+Role-playing Games
+more (21)
+Mathematics
+Cross Validated (stats)
+Theoretical Computer Science
+Physics
+MathOverflow
+Chemistry
+Biology
+more (5)
+Stack Apps
+Meta Stack Exchange
+Area 51
+Stack Overflow Careers
+site design / logo © 2016 Stack Exchange Inc; user contributions licensed under cc by-sa 3.0 with attribution required
+rev 2016.5.23.3602
